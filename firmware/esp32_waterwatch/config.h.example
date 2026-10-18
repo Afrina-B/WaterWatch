@@ -1,0 +1,72 @@
+/**
+ * WaterWatch ESP32 DevKit - Configuration File Example
+ * 
+ * INSTRUCTIONS:
+ * 1. Copy this file to config.h:
+ *      cp config.h.example config.h
+ * 2. Update your Wi-Fi credentials and laptop LAN IP address.
+ * 3. Never commit config.h containing real passwords to version control.
+ */
+
+#ifndef WATERWATCH_CONFIG_H
+#define WATERWATCH_CONFIG_H
+
+// ============================================================================
+// 1. Wi-Fi Settings
+// ============================================================================
+#define WIFI_SSID             "YOUR_WIFI_SSID"
+#define WIFI_PASSWORD         "YOUR_WIFI_PASSWORD"
+#define WIFI_TIMEOUT_MS       15000  // 15 seconds connection timeout
+
+// ============================================================================
+// 2. WaterWatch Backend API Settings
+// ============================================================================
+// Note: Use your development laptop's local LAN IP (e.g. 192.168.1.100), NOT "localhost"
+#define SERVER_HOST           "192.168.1.100"
+#define SERVER_PORT           5000
+#define API_ENDPOINT          "/api/readings"
+#define HTTP_TIMEOUT_MS       5000   // 5 seconds request timeout
+#define REPORT_INTERVAL_MS    4000   // Send reading every 4 seconds
+#define NODE_ID               "NODE-01"
+
+// ============================================================================
+// 3. Hardware Pin Definitions (ESP32 DevKit)
+// ============================================================================
+// Note: Only ADC1 channels are safe to use while Wi-Fi is active.
+// ADC2 channels (GPIO 0, 2, 4, 12, 13, 14, 15, 25, 26, 27) conflict with Wi-Fi!
+#define PIN_PH_ANALOG         34    // ADC1_CH6 (Analog PO from pH sensor board)
+#define PIN_TDS_ANALOG        32    // ADC1_CH4 (Analog AO from TDS sensor board)
+#define PIN_TURB_ANALOG       35    // ADC1_CH7 (Analog AO from Turbidity sensor board)
+
+// ============================================================================
+// 4. ADC & Diagnostic Modes
+// ============================================================================
+#define ADC_RESOLUTION_BITS   12    // 12-bit ADC (0 - 4095)
+#define ADC_VREF_VOLTS        3.3f  // Reference voltage (3.3V)
+#define SAMPLES_PER_READING   30    // Multi-sample filtering count
+#define SAMPLE_INTERVAL_MS    10    // Interval between ADC samples
+#define DIAGNOSTIC_SERIAL     true  // Print detailed diagnostic serial output
+#define DIAGNOSTIC_RAW_ADC    true  // Include raw ADC in HTTP payload for calibration
+
+// ============================================================================
+// 5. Sensor Calibration Constants
+// ============================================================================
+// -- pH Sensor (Standard 2-Point Buffer Solution Calibration) --
+// At pH 7.00, module output voltage is approximately 2.50V (or 1.65V if conditioned for 3.3V)
+#define PH_VOLTAGE_AT_PH7     2.50f
+// Theoretical Nernst slope is ~ -5.70 pH per Volt at 25°C
+#define PH_SLOPE              -5.70f
+
+// -- TDS Sensor (Gravity / Analog TDS Board) --
+// Standard reference temperature
+#define TDS_REFERENCE_TEMP_C  25.0f
+// Temperature compensation coefficient (typically 2% per °C)
+#define TDS_TEMP_COEFF        0.02f
+// K-value / calibration scaling factor
+#define TDS_K_FACTOR          1.0f
+
+// -- Turbidity Sensor --
+// Voltage in crystal clear distilled water (clamped <= 3.3V)
+#define TURB_CLEAR_VOLTAGE    3.0f
+
+#endif // WATERWATCH_CONFIG_H
